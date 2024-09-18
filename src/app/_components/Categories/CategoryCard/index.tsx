@@ -12,14 +12,16 @@ type CategoryCardProps = {
 }
 
 const CategoryCard = ({ category }: CategoryCardProps) => {
-  const media = category.media as Media
   const { setCategoryFilters } = useFilter()
+
+  // Vérification de l'existence de la propriété media avant d'accéder à media.url
+  const mediaUrl = category.media ? (category.media as Media).url : null
 
   return (
     <Link
       href="/products"
       className={classes.card}
-      style={{ backgroundImage: `url(${media.url})` }}
+      style={{ backgroundImage: mediaUrl ? `url(${mediaUrl})` : 'none' }}
       onClick={() => setCategoryFilters([category.id])}
     >
       <p className={classes.title}>{category.title}</p>
