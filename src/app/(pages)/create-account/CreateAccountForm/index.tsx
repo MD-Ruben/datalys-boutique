@@ -15,6 +15,7 @@ import classes from './index.module.scss'
 type FormData = {
   name: string
   email: string
+  username: string
   password: string
   passwordConfirm: string
 }
@@ -92,7 +93,7 @@ const CreateAccountForm: React.FC = () => {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className={classes.form}>
       <p>
-        {`C'est ici que les nouveaux clients peuvent s'inscrire et créer un nouveau compte. Pour gérer tous les utilisateurs, `}
+        
         <Link href="/admin/collections/users">se connecter au tableau de bord administratif</Link>
         {'.'}
       </p>
@@ -111,6 +112,14 @@ const CreateAccountForm: React.FC = () => {
         required
         register={register}
         error={errors.name}
+        type="text"
+      />
+      <Input
+        name="username"
+        label="Nom d'utilisateur"
+        required
+        register={register}
+        error={errors.username}
         type="text"
       />
       <Input
