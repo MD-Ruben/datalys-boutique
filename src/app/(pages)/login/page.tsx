@@ -13,7 +13,7 @@ import classes from './index.module.scss'
 
 export default async function Login() {
   await getMeUser({
-    validUserRedirect: `/account?warning=${encodeURIComponent('You are already logged in.')}`,
+    validUserRedirect: `/account?warning=${encodeURIComponent('Vous êtes déjà connecté(e).')}`,
   })
 
   return (
@@ -21,7 +21,7 @@ export default async function Login() {
       <div className={classes.heroImg}>
         <Link href="/">
           <Image
-            src="/logo-black.svg"
+            src="/logo-black.png"
             alt="logo"
             width={250}
             height={23}
@@ -35,11 +35,11 @@ export default async function Login() {
           <RenderParams className={classes.params} />
 
           <div className={classes.formTitle}>
-            <h3>Welcome</h3>
+            <h3>Bienvenue</h3>
             <Image src="/assets/icons/hand.png" alt="hand" width={30} height={30} />
           </div>
 
-          <p>Please login here</p>
+          <p>Veuillez vous connecter ici</p>
 
           <LoginForm />
         </div>
@@ -49,10 +49,10 @@ export default async function Login() {
 }
 
 export const metadata: Metadata = {
-  title: 'Login',
-  description: 'Login or create an account to get started.',
+  title: 'Connexion',
+  description: 'Connectez-vous ou créez un compte pour commencer.',
   openGraph: mergeOpenGraph({
-    title: 'Login',
+    title: 'Connexion',
     url: '/login',
   }),
 }

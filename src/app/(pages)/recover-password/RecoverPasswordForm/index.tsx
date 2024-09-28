@@ -41,7 +41,7 @@ export const RecoverPasswordForm: React.FC = () => {
       setError('')
     } else {
       setError(
-        'There was a problem while attempting to send you a password reset email. Please try again.',
+        "Un problème est survenu lors de la tentative d'envoi d'un courriel de réinitialisation du mot de passe. Veuillez réessayer.",
       )
     }
   }, [])
@@ -50,13 +50,16 @@ export const RecoverPasswordForm: React.FC = () => {
     <Fragment>
       {!success && (
         <React.Fragment>
-          <p>Enter your registered email address. We'll send you a code to reset your password.</p>
+          <p>
+            Saisissez votre adresse email enregistrée. Nous vous enverrons un code pour
+            réinitialiser votre mot de passe.
+          </p>
 
           <form onSubmit={handleSubmit(onSubmit)} className={classes.form}>
             <Message error={error} className={classes.message} />
             <Input
               name="email"
-              label="Email Address"
+              label="Adresse email"
               required
               register={register}
               error={errors.email}
@@ -65,7 +68,7 @@ export const RecoverPasswordForm: React.FC = () => {
             <Button
               type="submit"
               appearance="primary"
-              label="Recover Password"
+              label="Récupérer le mot de passe"
               className={classes.submit}
             />
           </form>
@@ -73,8 +76,11 @@ export const RecoverPasswordForm: React.FC = () => {
       )}
       {success && (
         <React.Fragment>
-          <h1>Request submitted</h1>
-          <p>Check your email for a link that will allow you to securely reset your password.</p>
+          <h1>Demande soumise</h1>
+          <p>
+            Consultez votre courrier électronique pour trouver un lien qui vous permettra de
+            réinitialiser votre mot de passe en toute sécurité.
+          </p>
         </React.Fragment>
       )}
     </Fragment>

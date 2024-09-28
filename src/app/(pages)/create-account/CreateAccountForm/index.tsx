@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useCallback, useRef, useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
@@ -34,40 +34,56 @@ const CreateAccountForm: React.FC = () => {
     watch,
   } = useForm<FormData>()
 
-  const password = useRef({})
-  password.current = watch('password', '')
+  const password = watch('password')
 
   const onSubmit = useCallback(
     async (data: FormData) => {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/users`, {
-        method: 'POST',
-        body: JSON.stringify(data),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
+      setLoading(true) // Set loading state
 
-      if (!response.ok) {
-        const message = response.statusText || 'There was an error creating the account.'
-        setError(message)
-        return
-      }
-
-      const redirect = searchParams.get('redirect')
-
-      const timer = setTimeout(() => {
-        setLoading(true)
-      }, 1000)
+      console.log('Submitting data:', data) // Log data to check structure
 
       try {
-        await login(data)
-        clearTimeout(timer)
-        if (redirect) router.push(redirect as string)
-        else router.push(`/`)
-        window.location.href = '/'
-      } catch (_) {
-        clearTimeout(timer)
-        setError('There was an error with the credentials provided. Please try again.')
+        const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/users`, {
+          method: 'POST',
+          body: JSON.stringify(data),
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        })
+
+        const responseData = await response.json()
+
+        if (!response.ok) {
+          console.error('Server Error:', response.status, responseData) // Log error details
+          setError(
+            responseData?.message ||
+              response.statusText ||
+              "Une erreur s'est produite lors de la création du compte.",
+          )
+          setLoading(false)
+          return
+        }
+
+        console.log('Success:', responseData) // Log successful response
+
+        const redirect = searchParams.get('redirect')
+
+        try {
+          await login(data)
+          if (redirect) router.push(redirect as string)
+          else router.push(`/`)
+          window.location.href = '/'
+        } catch (loginError) {
+          console.error('Login Error:', loginError) // Log login error
+          setError(
+            "Une erreur s'est produite avec les informations d'identification fournies. Veuillez réessayer.",
+          )
+        }
+      } catch (fetchError) {
+        console.error('Fetch Error:', fetchError) // Log fetch error
+        setError('Une erreur réseau est survenue. Veuillez réessayer.')
+      } finally {
+        setLoading(false) // Reset loading state
       }
     },
     [login, router, searchParams],
@@ -76,14 +92,14 @@ const CreateAccountForm: React.FC = () => {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className={classes.form}>
       <p>
-        {`This is where new customers can signup and create a new account. To manage all users, `}
-        <Link href="/admin/collections/users">login to the admin dashboard</Link>
+        {`C'est ici que les nouveaux clients peuvent s'inscrire et créer un nouveau compte. Pour gérer tous les utilisateurs, `}
+        <Link href="/admin/collections/users">se connecter au tableau de bord administratif</Link>
         {'.'}
       </p>
       <Message error={error} className={classes.message} />
       <Input
         name="email"
-        label="Email Address"
+        label="Adresse e-mail"
         required
         register={register}
         error={errors.email}
@@ -91,7 +107,7 @@ const CreateAccountForm: React.FC = () => {
       />
       <Input
         name="name"
-        label="Full name"
+        label="Nom complet"
         required
         register={register}
         error={errors.name}
@@ -100,7 +116,7 @@ const CreateAccountForm: React.FC = () => {
       <Input
         name="password"
         type="password"
-        label="Password"
+        label="Mot de passe"
         required
         register={register}
         error={errors.password}
@@ -108,22 +124,22 @@ const CreateAccountForm: React.FC = () => {
       <Input
         name="passwordConfirm"
         type="password"
-        label="Confirm Password"
+        label="Confirmer le mot de passe"
         required
         register={register}
-        validate={value => value === password.current || 'The passwords do not match'}
+        validate={value => value === password || 'Les mots de passe ne correspondent pas'}
         error={errors.passwordConfirm}
       />
       <Button
         type="submit"
-        label={loading ? 'Processing' : 'Sign up'}
+        label={loading ? 'Processing' : "S'inscrire"}
         disabled={loading}
         appearance="primary"
         className={classes.submit}
       />
       <div>
-        {'Already have an account? '}
-        <Link href={`/login${allParams}`}>Login</Link>
+        {'Vous avez déjà un compte ? '}
+        <Link href={`/login${allParams}`}>Connexion</Link>
       </div>
     </form>
   )

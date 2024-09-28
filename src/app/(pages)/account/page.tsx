@@ -16,10 +16,10 @@ export default async function Account() {
 }
 
 export const metadata: Metadata = {
-  title: 'Account',
-  description: 'Create an account or log in to your existing account.',
+  title: 'Compte',
+  description: 'Créez un compte ou connectez-vous à votre compte existant.',
   openGraph: mergeOpenGraph({
-    title: 'Account',
+    title: 'Compte',
     url: '/account',
   }),
 }
